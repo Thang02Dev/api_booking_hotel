@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using api_booking_hotel.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace api_booking_hotel.DBContext
 {
     public class MyDbContext : DbContext
     {
+        public DbSet<User> Users { get; set; }
 
         public MyDbContext(DbContextOptions options) : base(options)
         {
