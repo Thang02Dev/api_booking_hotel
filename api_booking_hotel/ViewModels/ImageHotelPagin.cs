@@ -1,8 +1,8 @@
 ﻿namespace api_booking_hotel.ViewModels
 {
-    public class UserPagin
+    public class ImageHotelPagin
     {
-        public List<UserViewModel> Data { get; set; } = [];
+        public List<ImageHotelViewModel> Data { get; set; } = [];
         public int Count { get; set; }
         public int Current { get; set; }
     }

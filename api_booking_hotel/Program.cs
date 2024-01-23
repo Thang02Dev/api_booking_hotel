@@ -1,5 +1,7 @@
 using api_booking_hotel.DBContext;
 using api_booking_hotel.Repositories.AuthenRepositories;
+using api_booking_hotel.Repositories.CategoryRepositories;
+using api_booking_hotel.Repositories.ImageHotelRepositories;
 using api_booking_hotel.Repositories.UserRepositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +17,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IAuthenRepository, AuthenRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IImageHotelRepository, ImageHotelRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

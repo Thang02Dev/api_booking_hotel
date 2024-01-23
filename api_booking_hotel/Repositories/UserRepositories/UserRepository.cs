@@ -77,17 +77,16 @@ namespace api_booking_hotel.Repositories.UserRepositories
             var data = await dbcontext.Users.FindAsync(id);
             if (data == null) return null;
             var passHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
-            var user = new UserViewModel
-            {
-                Full_Name = model.Full_Name,
-                Password = passHash,
-                Gender=model.Gender,
-                City = model.City,
-                Phone_Number = model.Phone_Number,
-                Role = model.Role,
-                Updated_Date = DateTime.Now,
-            };
-            return user;
+            data.Full_Name = model.Full_Name;
+            data.Password = passHash;
+            data.Gender = model.Gender;
+            data.City = model.City;
+            data.Phone_Number = model.Phone_Number;
+            data.Role = model.Role;
+            data.Updated_Date = DateTime.Now;
+            await dbcontext.SaveChangesAsync();
+
+            return model;
         }
 
         public async Task<UserViewModel> Delete(int id)
@@ -125,7 +124,7 @@ namespace api_booking_hotel.Repositories.UserRepositories
                 var data = list.Skip((current - 1) * (int)result).Take((int)result).ToList();
                 return new UserPagin
                 {
-                    UserViewModels = data,
+                    Data = data,
                     Count = (int)count,
                     Current = current
                 };
@@ -137,7 +136,7 @@ namespace api_booking_hotel.Repositories.UserRepositories
                 var data = list.Skip((current - 1) * (int)result).Take((int)result).ToList();
                 return new UserPagin
                 {
-                    UserViewModels = data,
+                    Data = data,
                     Count = (int)count,
                     Current = current
                 };

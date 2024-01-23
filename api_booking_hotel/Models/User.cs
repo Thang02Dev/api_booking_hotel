@@ -22,7 +22,9 @@ namespace api_booking_hotel.Models
         public string? City { get; set; } = string.Empty;
         [Required]
         public bool Active { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? Created_Date { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? Updated_Date { get; set; }
     }
 }

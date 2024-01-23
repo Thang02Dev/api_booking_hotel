@@ -1,4 +1,4 @@
-﻿using api_booking_hotel.Repositories.UserRepositories;
+﻿using api_booking_hotel.Repositories.CategoryRepositories;
 using api_booking_hotel.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,17 +7,17 @@ namespace api_booking_hotel.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class CategoriesController : ControllerBase
     {
-        private readonly IUserRepository repository;
+        private readonly ICategoryRepository repository;
 
-        public UsersController(IUserRepository _repository)
+        public CategoriesController(ICategoryRepository _repository)
         {
             repository = _repository;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() 
+        public async Task<IActionResult> GetAll()
         {
             var rs = await repository.GetAll();
             if (rs == null) return BadRequest();
@@ -25,7 +25,7 @@ namespace api_booking_hotel.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id) 
+        public async Task<IActionResult> GetById(int id)
         {
             var rs = await repository.GetById(id);
             if (rs == null) return BadRequest();
@@ -33,13 +33,13 @@ namespace api_booking_hotel.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(UserViewModel model)
+        public async Task<IActionResult> Create(CategoryViewModel model)
         {
             if (!ModelState.IsValid) return BadRequest();
             else
             {
                 var rs = await repository.Create(model);
-                if (rs == null) return BadRequest("Tạo mới thất bại. Có thể email đã tồn tại!");
+                if (rs == null) return BadRequest("Tạo mới thất bại. Có thể tên đã tồn tại!");
                 return Ok(new
                 {
                     mess = "Thêm mới thành công!",
@@ -49,13 +49,13 @@ namespace api_booking_hotel.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(UserViewModel model, int id)
+        public async Task<IActionResult> Update(CategoryViewModel model, int id)
         {
             if (!ModelState.IsValid) return BadRequest();
             else
             {
                 var rs = await repository.Update(model, id);
-                if (rs == null) return BadRequest("Cập nhật thất bại. Có thể không tìm thấy người dùng!");
+                if (rs == null) return BadRequest("Cập nhật thất bại. Có thể danh mục không tồn tại!");
                 return Ok(new
                 {
                     mess = "Cập nhật thành công!",
@@ -71,7 +71,7 @@ namespace api_booking_hotel.Controllers
             else
             {
                 var rs = await repository.Delete(id);
-                if (rs == null) return BadRequest("Xóa thất bại. Có thể không tìm thấy người dùng!");
+                if (rs == null) return BadRequest("Xóa thất bại. Có thể danh mục không tồn tại!");
                 return Ok(new
                 {
                     mess = "Xóa thành công!",
@@ -84,8 +84,8 @@ namespace api_booking_hotel.Controllers
         public async Task<IActionResult> ChangedActive(int id)
         {
             var rs = await repository.ChangedActive(id);
-            if (rs == null) return BadRequest("Lỗi. Có thể không tìm thấy người dùng!");
-            return Ok(new 
+            if (rs == null) return BadRequest("Lỗi. Có thể danh mục không tồn tại!");
+            return Ok(new
             {
                 mess = "Thay đổi thành công!",
                 before = !rs,
