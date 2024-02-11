@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api_booking_hotel.DBContext;
 
@@ -11,9 +12,11 @@ using api_booking_hotel.DBContext;
 namespace api_booking_hotel.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240124092833_Add_tbUtility_v2")]
+    partial class Add_tbUtility_v2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,6 +84,9 @@ namespace api_booking_hotel.Migrations
                     b.Property<float?>("Favorite")
                         .HasColumnType("real");
 
+                    b.Property<int?>("ImageHotelId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Introduce")
                         .HasColumnType("nvarchar(max)");
 
@@ -100,6 +106,8 @@ namespace api_booking_hotel.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("ImageHotelId");
 
                     b.ToTable("Hotels");
                 });
@@ -144,9 +152,6 @@ namespace api_booking_hotel.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("HotelId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Image")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -155,8 +160,6 @@ namespace api_booking_hotel.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("HotelId");
 
                     b.ToTable("ImageHotels");
                 });
@@ -260,7 +263,13 @@ namespace api_booking_hotel.Migrations
                         .WithMany("Hotels")
                         .HasForeignKey("CategoryId");
 
+                    b.HasOne("api_booking_hotel.Models.ImageHotel", "ImageHotel")
+                        .WithMany("Hotels")
+                        .HasForeignKey("ImageHotelId");
+
                     b.Navigation("Category");
+
+                    b.Navigation("ImageHotel");
                 });
 
             modelBuilder.Entity("api_booking_hotel.Models.HotelUtility", b =>
@@ -276,15 +285,6 @@ namespace api_booking_hotel.Migrations
                     b.Navigation("Hotel");
 
                     b.Navigation("Utility");
-                });
-
-            modelBuilder.Entity("api_booking_hotel.Models.ImageHotel", b =>
-                {
-                    b.HasOne("api_booking_hotel.Models.Hotel", "Hotel")
-                        .WithMany("ImageHotels")
-                        .HasForeignKey("HotelId");
-
-                    b.Navigation("Hotel");
                 });
 
             modelBuilder.Entity("api_booking_hotel.Models.Utility", b =>
@@ -304,8 +304,11 @@ namespace api_booking_hotel.Migrations
             modelBuilder.Entity("api_booking_hotel.Models.Hotel", b =>
                 {
                     b.Navigation("HotelUtilities");
+                });
 
-                    b.Navigation("ImageHotels");
+            modelBuilder.Entity("api_booking_hotel.Models.ImageHotel", b =>
+                {
+                    b.Navigation("Hotels");
                 });
 
             modelBuilder.Entity("api_booking_hotel.Models.Utility", b =>

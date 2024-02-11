@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using api_booking_hotel.ViewModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace api_booking_hotel.Models
 {
@@ -10,6 +11,7 @@ namespace api_booking_hotel.Models
         public bool Active { get; set; }
         public int Position { get; set; }
         public string? Description { get; set; }
-        public List<Hotel>? Hotels { get; set; }
+        public int? HotelId { get; set; }
+        public Hotel? Hotel{ get; set; }
     }
 }

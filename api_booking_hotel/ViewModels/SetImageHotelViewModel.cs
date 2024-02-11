@@ -1,9 +1,8 @@
-﻿using api_booking_hotel.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace api_booking_hotel.ViewModels
 {
-    public class ImageHotelViewModel
+    public class SetImageHotelViewModel
     {
         public int Id { get; set; }
         public string? Image { get; set; }
@@ -13,6 +12,5 @@ namespace api_booking_hotel.ViewModels
         public int Position { get; set; }
         public string? Description { get; set; }
         public int? HotelId { get; set; }
-        public HotelViewModel? HotelViewModel { get; set; }
     }
 }

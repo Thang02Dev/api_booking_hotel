@@ -1,17 +1,16 @@
-﻿using api_booking_hotel.Repositories.ImageHotelRepositories;
+﻿using api_booking_hotel.Repositories.HotelRepositories;
 using api_booking_hotel.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api_booking_hotel.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ImageHotelsController : ControllerBase
+    public class HotelsController : ControllerBase
     {
-        private readonly IImageHotelRepository repository;
+        private readonly IHotelRepository repository;
 
-        public ImageHotelsController(IImageHotelRepository _repository)
+        public HotelsController(IHotelRepository _repository) 
         {
             repository = _repository;
         }
@@ -23,7 +22,6 @@ namespace api_booking_hotel.Controllers
             if (rs == null) return BadRequest();
             return Ok(rs);
         }
-
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -33,13 +31,13 @@ namespace api_booking_hotel.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm]SetImageHotelViewModel model, IFormFile[] fileimage)
+        public async Task<IActionResult> Create(SetHotelViewModel model)
         {
             if (!ModelState.IsValid) return BadRequest();
             else
             {
-                var rs = await repository.Create(model, fileimage);
-                if (rs == null) return BadRequest("Tạo mới thất bại. Lỗi!");
+                var rs = await repository.Create(model);
+                if (rs == null) return BadRequest("Tạo mới thất bại. Có thể tên đã tồn tại!");
                 return Ok(new
                 {
                     mess = "Thêm mới thành công!",
@@ -49,13 +47,13 @@ namespace api_booking_hotel.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update([FromForm]SetImageHotelViewModel model, int id, IFormFile fileimage)
+        public async Task<IActionResult> Update(SetHotelViewModel model, int id)
         {
             if (!ModelState.IsValid) return BadRequest();
             else
             {
-                var rs = await repository.Update(model, id, fileimage);
-                if (rs == null) return BadRequest("Cập nhật thất bại. Có thể ảnh không tồn tại!");
+                var rs = await repository.Update(model, id);
+                if (rs == null) return BadRequest("Cập nhật thất bại. Có thể khách sạn không tồn tại!");
                 return Ok(new
                 {
                     mess = "Cập nhật thành công!",
@@ -71,7 +69,7 @@ namespace api_booking_hotel.Controllers
             else
             {
                 var rs = await repository.Delete(id);
-                if (rs == null) return BadRequest("Xóa thất bại. Có thể ảnh không tồn tại!");
+                if (rs == null) return BadRequest("Xóa thất bại. Có thể khách sạn không tồn tại!");
                 return Ok(new
                 {
                     mess = "Xóa thành công!",
@@ -84,7 +82,7 @@ namespace api_booking_hotel.Controllers
         public async Task<IActionResult> ChangedActive(int id)
         {
             var rs = await repository.ChangedActive(id);
-            if (rs == null) return BadRequest("Lỗi. Có thể ảnh không tồn tại!");
+            if (rs == null) return BadRequest("Lỗi. Có thể khách sạn không tồn tại!");
             return Ok(new
             {
                 mess = "Thay đổi thành công!",
@@ -95,9 +93,9 @@ namespace api_booking_hotel.Controllers
         }
 
         [HttpGet("page/{page:int}")]
-        public async Task<IActionResult> GetPagin(int page)
+        public async Task<IActionResult> GetPagin(int page, string? key)
         {
-            var rs = await repository.GetPagin(page);
+            var rs = await repository.GetPagin(page, key);
             if (rs == null) return BadRequest();
             return Ok(new
             {

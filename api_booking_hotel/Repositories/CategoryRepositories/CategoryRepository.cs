@@ -28,7 +28,7 @@ namespace api_booking_hotel.Repositories.CategoryRepositories
         {
             var isName = await dbcontext.Categories.SingleOrDefaultAsync(x => x.Name == model.Name);
             if (isName != null) return null;
-            var cate = new Category
+            var data = new Category
             {
                 Name = model.Name,
                 Active = true,
@@ -36,7 +36,7 @@ namespace api_booking_hotel.Repositories.CategoryRepositories
                 Position = model.Position,
                 Slug = ConvertDatas.ConvertToSlug(model.Slug),
             };
-            await dbcontext.Categories.AddAsync(cate);
+            await dbcontext.Categories.AddAsync(data);
             await dbcontext.SaveChangesAsync();
             return model;
         }
@@ -71,8 +71,9 @@ namespace api_booking_hotel.Repositories.CategoryRepositories
 
         public async Task<CategoryViewModel> GetById(int id)
         {
-            var data = await dbcontext.Categories.SingleAsync(x => x.Id == id);
-            var cate = new CategoryViewModel
+            var data = await dbcontext.Categories.SingleOrDefaultAsync(x => x.Id == id);
+            if (data == null) return null;
+            var rs = new CategoryViewModel
             {
                 Id = data.Id,
                 Name = data.Name,
@@ -81,7 +82,7 @@ namespace api_booking_hotel.Repositories.CategoryRepositories
                 Slug = data.Slug,
                 Active = data.Active,
             };
-            return cate;
+            return rs;
         }
 
         public async Task<CategoryPagin> GetPagin(int current, string? keySearch)

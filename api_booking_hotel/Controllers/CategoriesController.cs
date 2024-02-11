@@ -28,7 +28,7 @@ namespace api_booking_hotel.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var rs = await repository.GetById(id);
-            if (rs == null) return BadRequest();
+            if (rs == null) return BadRequest("Không tìm thấy!");
             return Ok(rs);
         }
 

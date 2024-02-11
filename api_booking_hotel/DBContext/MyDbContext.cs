@@ -9,6 +9,9 @@ namespace api_booking_hotel.DBContext
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<ImageHotel> ImageHotels { get; set; }
+        public DbSet<UtilityCategory> UtilityCategories { get; set; }
+        public DbSet<Utility> Utilities { get; set; }
+        public DbSet<HotelUtility> HotelUtilities { get; set; }
 
         public MyDbContext(DbContextOptions options) : base(options)
         {

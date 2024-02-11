@@ -32,7 +32,8 @@ namespace api_booking_hotel.Repositories.UserRepositories
 
         public async Task<UserViewModel> GetById(int id)
         {
-            var data = await dbcontext.Users.SingleAsync(x => x.Id == id);
+            var data = await dbcontext.Users.SingleOrDefaultAsync(x => x.Id == id);
+            if (data == null) return null;
             var user = new UserViewModel
             {
                 Id = data.Id,

@@ -10,6 +10,6 @@ namespace api_booking_hotel.Models
         public string Name { get; set; } = string.Empty;
         [Column(TypeName = "varchar(150)")]
         public string Slug { get; set; } = string.Empty;
-        public List<UtilityCategory>? UtilityCategories { get; set; }
+        public List<Utility>? Utilities { get; set; }
     }
 }

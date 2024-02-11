@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api_booking_hotel.DBContext;
 
@@ -11,9 +12,11 @@ using api_booking_hotel.DBContext;
 namespace api_booking_hotel.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240205095100_Changed_Column_tblImageHotels")]
+    partial class Changed_Column_tblImageHotels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -266,7 +269,7 @@ namespace api_booking_hotel.Migrations
             modelBuilder.Entity("api_booking_hotel.Models.HotelUtility", b =>
                 {
                     b.HasOne("api_booking_hotel.Models.Hotel", "Hotel")
-                        .WithMany("HotelUtilities")
+                        .WithMany()
                         .HasForeignKey("HotelId");
 
                     b.HasOne("api_booking_hotel.Models.Utility", "Utility")
@@ -303,8 +306,6 @@ namespace api_booking_hotel.Migrations
 
             modelBuilder.Entity("api_booking_hotel.Models.Hotel", b =>
                 {
-                    b.Navigation("HotelUtilities");
-
                     b.Navigation("ImageHotels");
                 });
 
