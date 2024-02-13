@@ -3,9 +3,7 @@ using api_booking_hotel.Models;
 using api_booking_hotel.ViewModels;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace api_booking_hotel.Repositories.ImageHotelRepositories
 {
@@ -28,7 +26,7 @@ namespace api_booking_hotel.Repositories.ImageHotelRepositories
             return data.Active;
         }
 
-        public async Task<List<string>> Create(SetImageHotelViewModel model, IFormFile[] fileimage)
+        public async Task<List<string>> Create(ImageHotelViewModel model, IFormFile[] fileimage)
         {
             if (model == null || fileimage == null || fileimage.Length == 0)
             {
@@ -103,11 +101,6 @@ namespace api_booking_hotel.Repositories.ImageHotelRepositories
                 Description = x.Description,
                 Image = x.Image,
                 HotelId = x.HotelId,
-                HotelViewModel = new HotelViewModel
-                {
-                    Name = x.Hotel.Name,
-                    Slug = x.Hotel.Slug,
-                } ?? null
             }).OrderBy(x => x.Position).ToListAsync();
             return list;
         }
@@ -124,11 +117,6 @@ namespace api_booking_hotel.Repositories.ImageHotelRepositories
                 Image =data.Image,
                 Description = data.Description,
                 HotelId = data.HotelId,
-                HotelViewModel = new HotelViewModel
-                {
-                    Name = data.Hotel.Name,
-                    Slug = data.Hotel.Slug,
-                } ?? null
             };
             return cate;
         }
@@ -149,7 +137,7 @@ namespace api_booking_hotel.Repositories.ImageHotelRepositories
             
         }
 
-        public async Task<string> Update(SetImageHotelViewModel model, int id, IFormFile fileimage)
+        public async Task<string> Update(ImageHotelViewModel model, int id, IFormFile fileimage)
         {
             var data = await dbcontext.ImageHotels.FindAsync(id);
             if (model == null || fileimage == null || fileimage.Length == 0 || data == null)

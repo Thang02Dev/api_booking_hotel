@@ -12,6 +12,10 @@ namespace api_booking_hotel.DBContext
         public DbSet<UtilityCategory> UtilityCategories { get; set; }
         public DbSet<Utility> Utilities { get; set; }
         public DbSet<HotelUtility> HotelUtilities { get; set; }
+        public DbSet<Feature> Features { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<RoomFeature> RoomFeatures { get; set; }
+        public DbSet<ImageRoom> ImageRooms { get; set; }
 
         public MyDbContext(DbContextOptions options) : base(options)
         {

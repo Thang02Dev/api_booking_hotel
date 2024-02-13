@@ -146,8 +146,8 @@ namespace api_booking_hotel.Repositories.HotelRepositories
             var result = 15f;
             if (keySearch != null && keySearch.Length > 0)
             {
-                var list = GetAll().Result.Where(x => x.Name.ToLower().Contains(keySearch.ToLower())
-                                    || x.Slug.ToLower().Contains(keySearch.ToLower())).ToList();
+                var list = GetAll().Result.Where(x => x.Name.Contains(keySearch, StringComparison.CurrentCultureIgnoreCase)
+                                    || x.Slug.Contains(keySearch, StringComparison.CurrentCultureIgnoreCase)).ToList();
                 var count = Math.Ceiling(list.Count / result);
 
                 var data = list.Skip((current - 1) * (int)result).Take((int)result).ToList();

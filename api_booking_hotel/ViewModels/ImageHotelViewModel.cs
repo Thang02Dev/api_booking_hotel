@@ -1,5 +1,6 @@
 ﻿using api_booking_hotel.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace api_booking_hotel.ViewModels
 {
@@ -13,6 +14,7 @@ namespace api_booking_hotel.ViewModels
         public int Position { get; set; }
         public string? Description { get; set; }
         public int? HotelId { get; set; }
-        public HotelViewModel? HotelViewModel { get; set; }
+        //[JsonIgnore]
+        //public HotelViewModel? HotelViewModel { get; set; }
     }
 }

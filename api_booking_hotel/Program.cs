@@ -1,6 +1,7 @@
 using api_booking_hotel.DBContext;
 using api_booking_hotel.Repositories.AuthenRepositories;
 using api_booking_hotel.Repositories.CategoryRepositories;
+using api_booking_hotel.Repositories.FeatureRepositories;
 using api_booking_hotel.Repositories.HotelRepositories;
 using api_booking_hotel.Repositories.HotelUtilityRepositories;
 using api_booking_hotel.Repositories.ImageHotelRepositories;
@@ -27,6 +28,7 @@ builder.Services.AddScoped<IUtilityCategoryRepository, UtilityCategoryRepository
 builder.Services.AddScoped<IUtilityRepository, UtilityRepository>();
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 builder.Services.AddScoped<IHotelUtilityRepository, HotelUtilityRepository>();
+builder.Services.AddScoped<IFeatureRepository, FeatureRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
