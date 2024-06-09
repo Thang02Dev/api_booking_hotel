@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Uploads\Images\Hotels\" />
+    <Folder Include="Uploads\Images\Rooms\" />
   </ItemGroup>
 
 </Project>

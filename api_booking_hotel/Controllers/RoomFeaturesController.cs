@@ -1,40 +1,26 @@
-﻿using api_booking_hotel.Repositories.HotelUtilityRepositories;
-using api_booking_hotel.ViewModels;
-using Microsoft.AspNetCore.Http;
+﻿using api_booking_hotel.Repositories.RoomFeatureRepositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api_booking_hotel.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HotelUtilitiesController : ControllerBase
+    public class RoomFeaturesController : ControllerBase
     {
-        private readonly IHotelUtilityRepository repository;
+        private readonly IRoomFeatureRepository repository;
 
-        public HotelUtilitiesController(IHotelUtilityRepository _repository) {
+        public RoomFeaturesController(IRoomFeatureRepository _repository)
+        {
             repository = _repository;
         }
 
-        [HttpPost("changed-main/{id:int}")]
-        public async Task<IActionResult> ChangedMain(int id)
-        {
-            var rs = await repository.ChangedMain(id);
-            if (rs == null) return BadRequest("Lỗi. Có thể không tồn tại!");
-            return Ok(new
-            {
-                mess = "Thay đổi thành công!",
-                before = !rs,
-                after = rs,
-            });
-
-        }
         [HttpPost]
-        public async Task<IActionResult> Create(int hotelId,[FromForm] int[] utilityId)
+        public async Task<IActionResult> Create(int roomId, [FromForm] int[] featureId)
         {
             if (!ModelState.IsValid) return BadRequest();
             else
             {
-                var rs = await repository.Create(hotelId, utilityId);
+                var rs = await repository.Create(roomId, featureId);
                 if (rs != true) return BadRequest("Tạo mới thất bại!");
                 return Ok(new
                 {

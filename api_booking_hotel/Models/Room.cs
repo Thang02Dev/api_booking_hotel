@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api_booking_hotel.Models
 {
@@ -13,8 +14,10 @@ namespace api_booking_hotel.Models
         public int Size  { get; set; }
         public bool Active { get; set; }
         public int NumberOfBeds { get; set; }
-        public int NumberOfQuests { get; set; }
+        public int NumberOfGuests { get; set; }
         public float Price { get; set; }
+        [Column(TypeName = "varchar(MAX)")]
+        public string Slug { get; set; } = string.Empty;
         public int? Amount { get; set; }
         public int? HotelId { get; set; }
         public Hotel? Hotel { get; set; }

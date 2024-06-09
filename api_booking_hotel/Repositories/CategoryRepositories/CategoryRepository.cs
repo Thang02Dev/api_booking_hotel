@@ -34,7 +34,7 @@ namespace api_booking_hotel.Repositories.CategoryRepositories
                 Active = true,
                 Icon = model.Icon,
                 Position = model.Position,
-                Slug = ConvertDatas.ConvertToSlug(model.Slug),
+                Slug = ConvertDatas.ConvertToSlug(model.Name),
             };
             await dbcontext.Categories.AddAsync(data);
             await dbcontext.SaveChangesAsync();
@@ -104,7 +104,7 @@ namespace api_booking_hotel.Repositories.CategoryRepositories
             }
             else
             {
-                var count = Math.Ceiling(await dbcontext.Users.CountAsync() / result);
+                var count = Math.Ceiling(await dbcontext.Categories.CountAsync() / result);
                 var list = await GetAll();
                 var data = list.Skip((current - 1) * (int)result).Take((int)result).ToList();
                 return new CategoryPagin

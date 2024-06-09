@@ -34,6 +34,13 @@ namespace api_booking_hotel.Repositories.FeatureRepositories
         {
             var data = await dbcontext.Features.FindAsync(id);
             if (data == null) return null;
+
+            var roomFeatures = await dbcontext.RoomFeatures.Where(x => x.FeatureId == data.Id).ToListAsync();
+            foreach (var item in roomFeatures)
+            {
+                dbcontext.RoomFeatures.Remove(item);
+            }
+
             dbcontext.Features.Remove(data);
             await dbcontext.SaveChangesAsync();
             return new FeatureViewModel

@@ -32,7 +32,7 @@ namespace api_booking_hotel.Repositories.HotelRepositories
             {
                 Name = model.Name,
                 Active = true,
-                Slug = ConvertDatas.ConvertToSlug(model.Slug),
+                Slug = ConvertDatas.ConvertToSlug(model.Name),
                 Address = model.Address,
                 CategoryId = model.CategoryId,
                 CheckIn_Time = model.CheckIn_Time,
@@ -54,8 +54,17 @@ namespace api_booking_hotel.Repositories.HotelRepositories
             var listImages = await dbcontext.ImageHotels.Where(x=>x.HotelId == data.Id).ToListAsync();
             foreach (var item in listImages)
             {
-                var image = await dbcontext.ImageHotels.SingleAsync(x => x.Id == item.Id);
-                dbcontext.ImageHotels.Remove(image);
+                dbcontext.ImageHotels.Remove(item);
+            }
+            var listRooms = await dbcontext.Rooms.Where(x => x.HotelId == data.Id).ToListAsync();
+            foreach (var item in listRooms)
+            {
+                dbcontext.Rooms.Remove(item);
+            }
+            var listUtilities = await dbcontext.HotelUtilities.Where(x => x.HotelId == data.Id).ToListAsync();
+            foreach (var item in listUtilities)
+            {
+                dbcontext.HotelUtilities.Remove(item);
             }
 
             dbcontext.Hotels.Remove(data);
@@ -70,6 +79,7 @@ namespace api_booking_hotel.Repositories.HotelRepositories
 
         public async Task<List<HotelViewModel>> GetAll()
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var list = await dbcontext.Hotels.Select(x => new HotelViewModel
             {
                 Id = x.Id,
@@ -105,6 +115,7 @@ namespace api_booking_hotel.Repositories.HotelRepositories
                     } ?? null,
                 }).ToList(),
             }).OrderByDescending(x => x.Id).ToListAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             return list;
         }
 
@@ -112,6 +123,7 @@ namespace api_booking_hotel.Repositories.HotelRepositories
         {
             var data = await dbcontext.Hotels.SingleOrDefaultAsync(x => x.Id == id);
             if (data == null) return null;
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var rs = new HotelViewModel
             {
                 Id = data.Id,
@@ -125,11 +137,6 @@ namespace api_booking_hotel.Repositories.HotelRepositories
                 Favorite = data.Favorite,
                 Phone_Number = data.Phone_Number,
                 CategoryId = data.CategoryId,
-                CategoryViewModel = new CategoryViewModel
-                {
-                    Name = data.Category.Name,
-                    Slug = data.Category.Slug
-                } ?? null,
                 ImageHotelViewModels = dbcontext.ImageHotels.Where(k => k.HotelId == data.Id).Select(k => new ImageHotelViewModel
                 {
                     Id = k.Id,
@@ -138,6 +145,7 @@ namespace api_booking_hotel.Repositories.HotelRepositories
                     Position = k.Position,
                 }).ToList(),
             };
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             return rs;
         }
 

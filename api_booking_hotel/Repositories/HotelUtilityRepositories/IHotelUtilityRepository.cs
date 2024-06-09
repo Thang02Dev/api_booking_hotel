@@ -6,5 +6,6 @@ namespace api_booking_hotel.Repositories.HotelUtilityRepositories
     {
         Task<bool> Create(int hotelId, int[] utilityId);
         Task<bool> Delete(int id);
+        Task<bool?> ChangedMain(int id);
     }
 }

@@ -11,7 +11,17 @@ namespace api_booking_hotel.Repositories.HotelUtilityRepositories
         public HotelUtilityRepository(MyDbContext _dbContext) 
         {
             dbContext = _dbContext;
-        } 
+        }
+
+        public async Task<bool?> ChangedMain(int id)
+        {
+            var data = await dbContext.HotelUtilities.FindAsync(id);
+            if (data == null) return null;
+            data.Main = !data.Main;
+            await dbContext.SaveChangesAsync();
+            return data.Main;
+        }
+
         public async Task<bool> Create(int hotelId, int[] utilityId)
         {
             foreach (var item in utilityId)

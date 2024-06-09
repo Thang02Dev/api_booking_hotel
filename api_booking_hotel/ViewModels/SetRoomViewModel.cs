@@ -1,13 +1,11 @@
-﻿using api_booking_hotel.Models;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace api_booking_hotel.ViewModels
 {
-    public class RoomViewModel
+    public class SetRoomViewModel
     {
         public int Id { get; set; }
-        [Required(ErrorMessage ="Tên phòng không được bỏ trống")]
+        [Required(ErrorMessage = "Tên phòng không được bỏ trống")]
         public string Name { get; set; } = string.Empty;
         [Required(ErrorMessage = "Mô tả không được bỏ trống")]
         public string Description { get; set; } = string.Empty;
@@ -26,8 +24,5 @@ namespace api_booking_hotel.ViewModels
         public string Slug { get; set; } = string.Empty;
         public int? Amount { get; set; }
         public int? HotelId { get; set; }
-        public HotelViewModel? HotelViewModel { get; set; }
-        public List<RoomFeatureViewModel>? RoomFeatureViewModels { get; set; }
-        public List<ImageRoomViewModel>? ImageRoomViewModels { get; set; }
     }
 }

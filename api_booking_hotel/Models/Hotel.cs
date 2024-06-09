@@ -25,5 +25,6 @@ namespace api_booking_hotel.Models
         public List<ImageHotel>? ImageHotels { get; set; }
         public List<HotelUtility>? HotelUtilities { get; set; }
 
+  
     }
 }

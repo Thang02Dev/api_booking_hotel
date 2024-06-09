@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api_booking_hotel.DBContext;
 
@@ -11,9 +12,11 @@ using api_booking_hotel.DBContext;
 namespace api_booking_hotel.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240214142401_Add_new_column_slug_intblRooms")]
+    partial class Add_new_column_slug_intblRooms
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,38 +128,6 @@ namespace api_booking_hotel.Migrations
                     b.ToTable("Hotels");
                 });
 
-            modelBuilder.Entity("api_booking_hotel.Models.HotelReview", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("HotelId")
-                        .HasColumnType("int");
-
-                    b.Property<float>("Rating")
-                        .HasColumnType("real");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HotelId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("HotelReviews");
-                });
-
             modelBuilder.Entity("api_booking_hotel.Models.HotelUtility", b =>
                 {
                     b.Property<int>("Id")
@@ -245,28 +216,6 @@ namespace api_booking_hotel.Migrations
                     b.ToTable("ImageRooms");
                 });
 
-            modelBuilder.Entity("api_booking_hotel.Models.PaymentMethod", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PaymentMethods");
-                });
-
             modelBuilder.Entity("api_booking_hotel.Models.Room", b =>
                 {
                     b.Property<int>("Id")
@@ -296,7 +245,7 @@ namespace api_booking_hotel.Migrations
                     b.Property<int>("NumberOfBeds")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumberOfGuests")
+                    b.Property<int>("NumberOfQuests")
                         .HasColumnType("int");
 
                     b.Property<float>("Price")
@@ -444,21 +393,6 @@ namespace api_booking_hotel.Migrations
                         .HasForeignKey("CategoryId");
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("api_booking_hotel.Models.HotelReview", b =>
-                {
-                    b.HasOne("api_booking_hotel.Models.Hotel", "Hotel")
-                        .WithMany()
-                        .HasForeignKey("HotelId");
-
-                    b.HasOne("api_booking_hotel.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Hotel");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("api_booking_hotel.Models.HotelUtility", b =>

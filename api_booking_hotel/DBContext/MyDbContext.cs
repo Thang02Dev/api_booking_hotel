@@ -16,6 +16,9 @@ namespace api_booking_hotel.DBContext
         public DbSet<Room> Rooms { get; set; }
         public DbSet<RoomFeature> RoomFeatures { get; set; }
         public DbSet<ImageRoom> ImageRooms { get; set; }
+        public DbSet<HotelReview> HotelReviews { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+
 
         public MyDbContext(DbContextOptions options) : base(options)
         {

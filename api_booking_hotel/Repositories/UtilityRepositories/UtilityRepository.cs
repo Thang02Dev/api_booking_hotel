@@ -44,6 +44,7 @@ namespace api_booking_hotel.Repositories.UtilityRepositories
 
         public async Task<List<UtilityViewModel>> GetAll()
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var list = await dbcontext.Utilities.Select(x => new UtilityViewModel
             {
                 Id = x.Id,
@@ -55,8 +56,9 @@ namespace api_booking_hotel.Repositories.UtilityRepositories
                     Slug = x.UtilityCategory.Slug
                 } ?? null
             }).OrderByDescending(x => x.Id).ToListAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
-          
+
             return list;
         }
 
@@ -69,11 +71,7 @@ namespace api_booking_hotel.Repositories.UtilityRepositories
                 Id = data.Id,
                 Name = data.Name,
                 UtilityCategoryId = data.UtilityCategoryId,
-                UtilityCategoryViewModel = new UtilityCategoryViewModel
-                {
-                    Name = data.UtilityCategory.Name,
-                    Slug = data.UtilityCategory.Slug
-                } ?? null
+
             };
             return rs;
         }

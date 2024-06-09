@@ -33,6 +33,11 @@ namespace api_booking_hotel.Repositories.UtilityCategoryRepositories
         {
             var data = await dbcontext.UtilityCategories.FindAsync(id);
             if (data == null) return null;
+            var utilities = await dbcontext.Utilities.Where(x => x.UtilityCategoryId == data.Id).ToListAsync();
+            foreach (var item in utilities)
+            {
+                item.UtilityCategoryId = null;
+            }
             dbcontext.UtilityCategories.Remove(data);
             await dbcontext.SaveChangesAsync();
             return new UtilityCategoryViewModel

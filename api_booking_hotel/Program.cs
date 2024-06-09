@@ -3,8 +3,12 @@ using api_booking_hotel.Repositories.AuthenRepositories;
 using api_booking_hotel.Repositories.CategoryRepositories;
 using api_booking_hotel.Repositories.FeatureRepositories;
 using api_booking_hotel.Repositories.HotelRepositories;
+using api_booking_hotel.Repositories.HotelReviewRepositories;
 using api_booking_hotel.Repositories.HotelUtilityRepositories;
 using api_booking_hotel.Repositories.ImageHotelRepositories;
+using api_booking_hotel.Repositories.ImageRoomRepositories;
+using api_booking_hotel.Repositories.RoomFeatureRepositories;
+using api_booking_hotel.Repositories.RoomRepositories;
 using api_booking_hotel.Repositories.UserRepositories;
 using api_booking_hotel.Repositories.UtilityCategoryRepositories;
 using api_booking_hotel.Repositories.UtilityRepositories;
@@ -29,6 +33,10 @@ builder.Services.AddScoped<IUtilityRepository, UtilityRepository>();
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 builder.Services.AddScoped<IHotelUtilityRepository, HotelUtilityRepository>();
 builder.Services.AddScoped<IFeatureRepository, FeatureRepository>();
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<IRoomFeatureRepository, RoomFeatureRepository>();
+builder.Services.AddScoped<IImageRoomRepository, ImageRoomRepository>();
+builder.Services.AddScoped<IHotelReviewRepository, HotelReviewRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -75,7 +83,7 @@ builder.Services.AddAuthentication(options =>
                 ValidateAudience = false
             };
         });
-
+builder.Services.AddCors(c => c.AddPolicy("AlowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -84,6 +92,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseHttpsRedirection();
 
