@@ -23,10 +23,14 @@ namespace api_booking_hotel.Repositories.RoomRepositories
             return data.Active;
         }
 
-        public async Task<SetRoomViewModel> Create(SetRoomViewModel model)
+        public async Task<object> Create(SetRoomViewModel model)
         {
             var isName = await dbcontext.Rooms.SingleOrDefaultAsync(x => x.Name == model.Name);
-            if (isName != null) return null;
+            if (isName != null) return new
+            {
+                mess = "Tên đã tồn tại!",
+                error = 1
+            };
             var data = new Room
             {
                 Name = model.Name,
@@ -43,7 +47,12 @@ namespace api_booking_hotel.Repositories.RoomRepositories
             };
             await dbcontext.Rooms.AddAsync(data);
             await dbcontext.SaveChangesAsync();
-            return model;
+            return new
+            {
+                model,
+                mess = "Thêm mới thành công!",
+                error = 0
+            };
         }
 
         public async Task<RoomViewModel> Delete(int id)
@@ -186,24 +195,44 @@ namespace api_booking_hotel.Repositories.RoomRepositories
             }
         }
 
-        public async Task<SetRoomViewModel> Update(SetRoomViewModel model, int id)
+        public async Task<object> Update(SetRoomViewModel model, int id)
         {
             var data = await dbcontext.Rooms.FindAsync(id);
-            if (data == null) return null;
-            data.Name = model.Name;
-            data.NumberOfBeds = model.NumberOfBeds;
-            data.NumberOfGuests = model.NumberOfGuests;
-            data.Slug = ConvertDatas.ConvertToSlug(data.Name);
-            data.Amount = model.Amount;
-            data.Description = model.Description;
-            data.Size = model.Size;
-            data.Type = model.Type;
-            data.Price = model.Price;
-            data.HotelId = model.HotelId;
+            if (data == null) return new
+            {
+                mess = "Thông tin không tồn tại!",
+                error = 2
+            };
+            else
+            {
+                var isName = await dbcontext.Rooms.SingleOrDefaultAsync(x => x.Name == model.Name);
+                if (isName != null) return new
+                {
+                    mess = "Tên đã tồn tại!",
+                    error = 1
+                };
+                data.Name = model.Name;
+                data.NumberOfBeds = model.NumberOfBeds;
+                data.NumberOfGuests = model.NumberOfGuests;
+                data.Slug = ConvertDatas.ConvertToSlug(data.Name);
+                data.Amount = model.Amount;
+                data.Description = model.Description;
+                data.Size = model.Size;
+                data.Type = model.Type;
+                data.Price = model.Price;
+                data.HotelId = model.HotelId;
 
-            await dbcontext.SaveChangesAsync();
+                await dbcontext.SaveChangesAsync();
 
-            return model;
+
+                return new
+                {
+                    model,
+                    mess = "Cập nhật thành công!",
+                    error = 0
+                };
+            }
+                
         }
     }
 }

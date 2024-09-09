@@ -6,8 +6,8 @@ namespace api_booking_hotel.Repositories.FeatureRepositories
     {
         Task<List<FeatureViewModel>> GetAll();
         Task<FeatureViewModel> GetById(int id);
-        Task<FeatureViewModel> Create(FeatureViewModel model);
-        Task<FeatureViewModel> Update(FeatureViewModel model, int id);
+        Task<object> Create(FeatureViewModel model);
+        Task<object> Update(FeatureViewModel model, int id);
         Task<FeatureViewModel> Delete(int id);
         Task<FeaturePagin> GetPagin(int current, string? keySearch);
     }

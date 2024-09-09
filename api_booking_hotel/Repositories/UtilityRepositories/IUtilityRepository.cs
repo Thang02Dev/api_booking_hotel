@@ -6,8 +6,8 @@ namespace api_booking_hotel.Repositories.UtilityRepositories
     {
         Task<List<UtilityViewModel>> GetAll();
         Task<UtilityViewModel> GetById(int id);
-        Task<SetUtilityViewModel> Create(SetUtilityViewModel model);
-        Task<SetUtilityViewModel> Update(SetUtilityViewModel model, int id);
+        Task<object> Create(SetUtilityViewModel model);
+        Task<object> Update(SetUtilityViewModel model, int id);
         Task<UtilityViewModel> Delete(int id);
         Task<UtilityPagin> GetPagin(int current, string? keySearch);
     }

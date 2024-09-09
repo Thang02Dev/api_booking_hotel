@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api_booking_hotel.DBContext;
 
@@ -11,9 +12,11 @@ using api_booking_hotel.DBContext;
 namespace api_booking_hotel.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240610155414_Change_type_column_time_in_hotel")]
+    partial class Change_type_column_time_in_hotel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,6 +93,9 @@ namespace api_booking_hotel.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CheckIn_Time")
                         .HasColumnType("nvarchar(max)");
 
@@ -116,6 +122,8 @@ namespace api_booking_hotel.Migrations
                         .HasColumnType("varchar(150)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Hotels");
                 });
@@ -432,6 +440,15 @@ namespace api_booking_hotel.Migrations
                     b.ToTable("UtilityCategories");
                 });
 
+            modelBuilder.Entity("api_booking_hotel.Models.Hotel", b =>
+                {
+                    b.HasOne("api_booking_hotel.Models.Category", "Category")
+                        .WithMany("Hotels")
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("api_booking_hotel.Models.HotelReview", b =>
                 {
                     b.HasOne("api_booking_hotel.Models.Hotel", "Hotel")
@@ -511,6 +528,11 @@ namespace api_booking_hotel.Migrations
                         .HasForeignKey("UtilityCategoryId");
 
                     b.Navigation("UtilityCategory");
+                });
+
+            modelBuilder.Entity("api_booking_hotel.Models.Category", b =>
+                {
+                    b.Navigation("Hotels");
                 });
 
             modelBuilder.Entity("api_booking_hotel.Models.Feature", b =>

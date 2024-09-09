@@ -36,13 +36,25 @@ namespace api_booking_hotel.Controllers
             if (!ModelState.IsValid) return BadRequest();
             else
             {
-                var rs = await repository.Create(model);
-                if (rs == null) return BadRequest("Tạo mới thất bại. Có thể tên đã tồn tại!");
-                return Ok(new
+                try
                 {
-                    mess = "Thêm mới thành công!",
-                    data = rs,
-                });
+                    dynamic rs = await repository.Create(model);
+                    if (rs.error == 1) return Ok(new
+                    {
+                        rs.mess,
+                        rs.error,
+                    });
+                    return Ok(new
+                    {
+                        rs.mess,
+                        rs.error,
+                        data = rs.model,
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
@@ -52,13 +64,30 @@ namespace api_booking_hotel.Controllers
             if (!ModelState.IsValid) return BadRequest();
             else
             {
-                var rs = await repository.Update(model, id);
-                if (rs == null) return BadRequest("Cập nhật thất bại. Có thể khách sạn không tồn tại!");
-                return Ok(new
+                try
                 {
-                    mess = "Cập nhật thành công!",
-                    data = rs,
-                });
+                    dynamic rs = await repository.Update(model, id);
+                    if (rs == null) return BadRequest("Cập nhật thất bại. Có thể khách sạn không tồn tại!");
+                    else
+                    {
+                        if (rs.error == 1) return Ok(new
+                        {
+                            rs.mess,
+                            rs.error,
+                        });
+                        return Ok(new
+                        {
+                            rs.mess,
+                            rs.error,
+                            data = rs.model,
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+
             }
         }
 

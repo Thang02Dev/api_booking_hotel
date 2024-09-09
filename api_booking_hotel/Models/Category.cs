@@ -14,6 +14,5 @@ namespace api_booking_hotel.Models
         public string? Icon { get; set; }
         public int Position { get; set; }
         public bool Active { get; set; }
-        public List<Hotel>? Hotels { get; set; }
     }
 }

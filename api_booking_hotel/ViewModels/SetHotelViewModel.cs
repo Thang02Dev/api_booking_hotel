@@ -13,13 +13,11 @@ namespace api_booking_hotel.ViewModels
         [RegularExpression(@"^0\d{9}$", ErrorMessage = "Số điện thoại không hợp lệ")]
         public string Phone_Number { get; set; } = string.Empty;
         public string? Introduce { get; set; }
-        [Required(ErrorMessage = "Slug không được bỏ trống")]
         public string Slug { get; set; } = string.Empty;
-        public DateTime? CheckIn_Time { get; set; }
-        public DateTime? CheckOut_Time { get; set; }
+        public string? CheckIn_Time { get; set; }
+        public string? CheckOut_Time { get; set; }
         [Required(ErrorMessage = "Trạng thái không được bỏ trống")]
         public bool Active { get; set; }
         public float? Favorite { get; set; }
-        public int? CategoryId { get; set; }
     }
 }

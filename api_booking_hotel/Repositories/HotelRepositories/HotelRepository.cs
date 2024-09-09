@@ -24,17 +24,20 @@ namespace api_booking_hotel.Repositories.HotelRepositories
             return data.Active;
         }
 
-        public async Task<SetHotelViewModel> Create(SetHotelViewModel model)
+        public async Task<object> Create(SetHotelViewModel model)
         {
             var isName = await dbcontext.Hotels.SingleOrDefaultAsync(x => x.Name == model.Name);
-            if (isName != null) return null;
+            if (isName != null) return new
+            {
+                mess = "Tên đã tồn tại!",
+                error = 1
+            };
             var data = new Hotel
             {
                 Name = model.Name,
                 Active = true,
                 Slug = ConvertDatas.ConvertToSlug(model.Name),
                 Address = model.Address,
-                CategoryId = model.CategoryId,
                 CheckIn_Time = model.CheckIn_Time,
                 CheckOut_Time = model.CheckOut_Time,
                 Favorite = model.Favorite,
@@ -43,7 +46,12 @@ namespace api_booking_hotel.Repositories.HotelRepositories
             };
             await dbcontext.Hotels.AddAsync(data);
             await dbcontext.SaveChangesAsync();
-            return model;
+            return new
+            {
+                model,
+                mess = "Thêm mới thành công!",
+                error = 0
+            };
         }
 
         public async Task<HotelViewModel> Delete(int id)
@@ -92,12 +100,6 @@ namespace api_booking_hotel.Repositories.HotelRepositories
                 Address = x.Address,
                 Favorite = x.Favorite,
                 Phone_Number = x.Phone_Number,
-                CategoryId = x.CategoryId,
-                CategoryViewModel = new CategoryViewModel
-                {
-                    Name = x.Category.Name,
-                    Slug = x.Category.Slug
-                } ?? null,
                 ImageHotelViewModels = dbcontext.ImageHotels.Where(k=>k.HotelId == x.Id).Select(k=> new ImageHotelViewModel
                 {
                     Id = k.Id,
@@ -136,7 +138,6 @@ namespace api_booking_hotel.Repositories.HotelRepositories
                 Address = data.Address,
                 Favorite = data.Favorite,
                 Phone_Number = data.Phone_Number,
-                CategoryId = data.CategoryId,
                 ImageHotelViewModels = dbcontext.ImageHotels.Where(k => k.HotelId == data.Id).Select(k => new ImageHotelViewModel
                 {
                     Id = k.Id,
@@ -180,24 +181,42 @@ namespace api_booking_hotel.Repositories.HotelRepositories
             }
         }
 
-        public async Task<SetHotelViewModel> Update(SetHotelViewModel model, int id)
+        public async Task<object> Update(SetHotelViewModel model, int id)
         {
             var data = await dbcontext.Hotels.FindAsync(id);
-            if (data == null) return null;
-            data.Name = model.Name;
-            data.Active = true;
-            data.Slug = ConvertDatas.ConvertToSlug(model.Slug);
-            data.Address = model.Address;
-            data.CategoryId = model.CategoryId;
-            data.CheckIn_Time = model.CheckIn_Time;
-            data.CheckOut_Time = model.CheckOut_Time;
-            data.Favorite = model.Favorite;
-            data.Phone_Number = model.Phone_Number;
-            data.Introduce = model.Introduce;
+            if (data == null) return new
+            {
+                mess = "Thông tin không tồn tại!",
+                error = 2
+            };
+            else
+            {
+                var isName = await dbcontext.Hotels.SingleOrDefaultAsync(x => x.Name == model.Name);
+                if (isName != null && data.Name != model.Name) return new
+                {
+                    mess = "Tên đã tồn tại!",
+                    error = 1
+                };
+                data.Name = model.Name;
+                data.Active = true;
+                data.Slug = ConvertDatas.ConvertToSlug(model.Slug);
+                data.Address = model.Address;
+                data.CheckIn_Time = model.CheckIn_Time;
+                data.CheckOut_Time = model.CheckOut_Time;
+                data.Favorite = model.Favorite;
+                data.Phone_Number = model.Phone_Number;
+                data.Introduce = model.Introduce;
 
-            await dbcontext.SaveChangesAsync();
+                await dbcontext.SaveChangesAsync();
 
-            return model;
+                return new
+                {
+                    model,
+                    mess = "Cập nhật thành công!",
+                    error = 0
+                };
+            }
+           
         }
     }
 }

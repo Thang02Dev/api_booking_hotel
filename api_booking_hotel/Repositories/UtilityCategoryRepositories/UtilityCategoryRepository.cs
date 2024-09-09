@@ -15,10 +15,14 @@ namespace api_booking_hotel.Repositories.UtilityCategoryRepositories
             dbcontext = _dbcontex;
         }
 
-        public async Task<UtilityCategoryViewModel> Create(UtilityCategoryViewModel model)
+        public async Task<object> Create(UtilityCategoryViewModel model)
         {
             var isName = await dbcontext.UtilityCategories.SingleOrDefaultAsync(x => x.Name == model.Name);
-            if (isName != null) return null;
+            if (isName != null) return new
+            {
+                mess= "Tên đã tồn tại!",
+                error = 1
+            };
             var data = new UtilityCategory
             {
                 Name = model.Name,
@@ -26,7 +30,12 @@ namespace api_booking_hotel.Repositories.UtilityCategoryRepositories
             };
             await dbcontext.UtilityCategories.AddAsync(data);
             await dbcontext.SaveChangesAsync();
-            return model;
+            return new
+            {
+                model,
+                mess = "Thêm mới thành công!",
+                error = 0
+            };
         }
 
         public async Task<UtilityCategoryViewModel> Delete(int id)
@@ -72,15 +81,34 @@ namespace api_booking_hotel.Repositories.UtilityCategoryRepositories
             return rs;
         }
 
-        public async Task<UtilityCategoryViewModel> Update(UtilityCategoryViewModel model, int id)
+        public async Task<object> Update(UtilityCategoryViewModel model, int id)
         {
             var data = await dbcontext.UtilityCategories.FindAsync(id);
-            if (data == null) return null;
-            data.Name = model.Name;
-            data.Slug = ConvertDatas.ConvertToSlug(data.Name);
-            await dbcontext.SaveChangesAsync();
+            if (data == null) return new
+            {
+                mess = "Thông tin không tồn tại!",
+                error = 2
+            };
+            else
+            {
+                var isName = await dbcontext.UtilityCategories.SingleOrDefaultAsync(x => x.Name == model.Name);
+                if (isName != null && data.Name != model.Name) return new
+                {
+                    mess = "Tên đã tồn tại!",
+                    error = 1
+                };
+                data.Name = model.Name;
+                data.Slug = ConvertDatas.ConvertToSlug(data.Name);
+                await dbcontext.SaveChangesAsync();
 
-            return model;
+                return new
+                {
+                    model,
+                    mess = "Cập nhật thành công!",
+                    error = 0
+                };
+            }
+            
         }
     }
 }

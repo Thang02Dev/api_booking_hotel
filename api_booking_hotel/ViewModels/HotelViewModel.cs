@@ -17,12 +17,11 @@ namespace api_booking_hotel.ViewModels
         public string? Introduce { get; set; }
         [Required(ErrorMessage = "Slug không được bỏ trống")]
         public string Slug { get; set; } = string.Empty;
-        public DateTime? CheckIn_Time { get; set; }
-        public DateTime? CheckOut_Time { get; set; }
+        public string? CheckIn_Time { get; set; }
+        public string? CheckOut_Time { get; set; }
         [Required(ErrorMessage = "Trạng thái không được bỏ trống")]
         public bool Active { get; set; }
         public float? Favorite { get; set; }
-        public int? CategoryId { get; set; }
         public CategoryViewModel? CategoryViewModel { get; set; }
         public List<ImageHotelViewModel>? ImageHotelViewModels { get; set; }
         public List<HotelUtilityViewModel>? HotelUtilityViewModels { get; set; }
