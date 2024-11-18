@@ -33,19 +33,16 @@ namespace api_booking_hotel.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm]ImageHotelViewModel model, IFormFile[] fileimage)
+        public async Task<IActionResult> Create([FromForm] ImageHotelViewModel model, IFormFile[] files)
         {
-            if (!ModelState.IsValid) return BadRequest();
-            else
-            {
-                var rs = await repository.Create(model, fileimage);
+                var rs = await repository.Create(model,files);
                 if (rs == null) return BadRequest("Tạo mới thất bại. Lỗi!");
                 return Ok(new
                 {
                     mess = "Thêm mới thành công!",
                     data = rs,
                 });
-            }
+            
         }
 
         [HttpPut("{id:int}")]

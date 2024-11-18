@@ -26,41 +26,74 @@ namespace api_booking_hotel.Repositories.ImageHotelRepositories
             return data.Active;
         }
 
-        public async Task<List<string>> Create(ImageHotelViewModel model, IFormFile[] fileimage)
+        public async Task<List<string>> Create( ImageHotelViewModel model, IFormFile[] files)
         {
-            if (model == null || fileimage == null || fileimage.Length == 0)
+            if (model == null || files == null)
             {
                 return null;
             }
 
             var list = new List<string>();
-            foreach (var item in fileimage)
+
+            // Đường dẫn thư mục gốc để lưu file
+            var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", "Images", "Hotels");
+
+            // Kiểm tra và tạo thư mục nếu chưa tồn tại
+            if (!Directory.Exists(uploadFolder))
             {
-                var data = new ImageHotel
-                {
-                    Active = true,
-                    Position = model.Position,
-                    Description = model.Description,
-                    HotelId = model.HotelId
-                };
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Images/Hotels", item.FileName);
-                using (var stream = File.Create(path))
-                {
-                    await item.CopyToAsync(stream);
-                }
-
-                data.Image = "/Uploads/Images/Hotels/" + item.FileName;
-
-                await dbcontext.ImageHotels.AddAsync(data);
-                await dbcontext.SaveChangesAsync();
-
-                list.Add(data.Image);
-                model.Position+=1;
-                
+                Directory.CreateDirectory(uploadFolder);
             }
-            
+            foreach (var item in files)
+            {
+                try
+                {
+                    // Xử lý vị trí
+                    var count = dbcontext.ImageHotels.Count();
+                    var maxPosition = 0;
+                    if (count > 0)
+                    {
+                        var images = await dbcontext.ImageHotels.Where(x => x.HotelId == model.HotelId).ToListAsync();
+                        maxPosition = images.Count != 0 ? images.Max(x => x.Position) : 0; // Giá trị mặc định là 0 nếu không có bản ghi nào
+
+                    }
+
+                    // Tạo tên file duy nhất (tránh ghi đè)
+                    var uniqueFileName = $"{Guid.NewGuid()}_{item.FileName}";
+                    var filePath = Path.Combine(uploadFolder, uniqueFileName);
+
+                    // Lưu file vào thư mục
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await item.CopyToAsync(stream);
+                    }
+
+                    // Tạo bản ghi trong CSDL
+                    var data = new ImageHotel
+                    {
+                        Active = true,
+                        Position = maxPosition + 1,
+                        Description = model.Description,
+                        HotelId = model.HotelId,
+                        Image = $"/Uploads/Images/Hotels/{uniqueFileName}" // Đường dẫn tương đối
+                    };
+
+                    await dbcontext.ImageHotels.AddAsync(data);
+                    await dbcontext.SaveChangesAsync();
+
+                    // Thêm đường dẫn vào danh sách trả về
+                    list.Add(data.Image);
+                }
+                catch (Exception ex)
+                {
+                    // Log lỗi hoặc xử lý lỗi theo cách bạn muốn
+                    Console.WriteLine($"Error processing file {item.FileName}: {ex.Message}");
+                }
+            }
+
+
             return list;
         }
+
 
         public async Task<ImageHotelViewModel> Delete(int id)
         {

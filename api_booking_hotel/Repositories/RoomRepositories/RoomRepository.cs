@@ -138,11 +138,11 @@ namespace api_booking_hotel.Repositories.RoomRepositories
                 Price = data.Price,
                 Size = data.Size,
                 Type = data.Type,
-                HotelViewModel = new HotelViewModel
+                HotelViewModel = data.Hotel != null ? new HotelViewModel
                 {
                     Name = data.Hotel.Name,
                     Slug = data.Hotel.Slug
-                } ?? null,
+                } : null,
                 ImageRoomViewModels = dbcontext.ImageRooms.Where(k => k.RoomId == data.Id).Select(k => new ImageRoomViewModel
                 {
                     Id = k.Id,
@@ -153,11 +153,11 @@ namespace api_booking_hotel.Repositories.RoomRepositories
                 RoomFeatureViewModels = dbcontext.RoomFeatures.Where(k => k.RoomId == data.Id).Select(k => new RoomFeatureViewModel
                 {
                     Id = k.Id,
-                    FeatureViewModel = new FeatureViewModel
+                    FeatureViewModel = k.Feature != null ? new FeatureViewModel
                     {
                         Id = k.Feature.Id,
                         Name = k.Feature.Name
-                    } ?? null
+                    } : null
                 }).ToList(),
             };
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
