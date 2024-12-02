@@ -124,9 +124,9 @@ namespace api_booking_hotel.Controllers
         }
 
         [HttpGet("page/{page:int}")]
-        public async Task<IActionResult> GetPagin(int page, string? key)
+        public async Task<IActionResult> GetPagin(int hotelId,int page, string? key)
         {
-            var rs = await repository.GetPagin(page, key);
+            var rs = await repository.GetPagin(hotelId,page, key);
             if (rs == null) return BadRequest();
             return Ok(new
             {

@@ -103,7 +103,7 @@ namespace api_booking_hotel.Repositories.ImageHotelRepositories
 
             if (data.Image != null)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Images/Hotels");
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", "Images", "Hotels");
                 var imageFileName = Path.GetFileName(data.Image);
                 var imagePathToDelete = Path.Combine(uploadsFolder, imageFileName);
 
@@ -154,12 +154,21 @@ namespace api_booking_hotel.Repositories.ImageHotelRepositories
             return rs;
         }
 
-        public async Task<ImageHotelPagin> GetPagin(int current)
+        public async Task<ImageHotelPagin> GetPagin(int current, int hotelId)
         {
             var result = 15f;
             
-            var count = Math.Ceiling(await dbcontext.ImageHotels.CountAsync() / result);
-            var list = await GetAll();
+            var count = Math.Ceiling(await dbcontext.ImageHotels.Where(x => x.HotelId == hotelId).CountAsync() / result);
+            var list = await dbcontext.ImageHotels.Where(x=>x.HotelId == hotelId).Select(x => new ImageHotelViewModel
+            {
+                Id = x.Id,
+                Active = x.Active,
+                Position = x.Position,
+                Description = x.Description,
+                Image = x.Image,
+                HotelId = x.HotelId,
+            }).OrderBy(x => x.Position).ToListAsync();
+
             var data = list.Skip((current - 1) * (int)result).Take((int)result).ToList();
             return new ImageHotelPagin
             {
@@ -170,37 +179,17 @@ namespace api_booking_hotel.Repositories.ImageHotelRepositories
             
         }
 
-        public async Task<string> Update(ImageHotelViewModel model, int id, IFormFile fileimage)
+        public async Task<string> Update( int id,ImageHotelViewModel model)
         {
             var data = await dbcontext.ImageHotels.FindAsync(id);
-            if (model == null || fileimage == null || fileimage.Length == 0 || data == null)
+            if (model == null  || data == null)
             {
                 return null;
             };
             data.Active = true;
             data.Position = model.Position;
             data.Description = model.Description;
-            data.HotelId = model.HotelId;
-            if (data.Image != null)
-            {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Images/Hotels");
-                var imageFileName = Path.GetFileName(data.Image);
-                var imagePathToDelete = Path.Combine(uploadsFolder, imageFileName);
-
-                // Kiểm tra xem tệp tồn tại trước khi xóa
-                if (File.Exists(imagePathToDelete))
-                {
-                    File.Delete(imagePathToDelete);
-                }
-            }
-
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Images", "Hotels", fileimage.FileName);
-            using (var stream = File.Create(path))
-            {
-                await fileimage.CopyToAsync(stream);
-            }
-
-            data.Image = "/Uploads/Images/Hotels/" + fileimage.FileName;
+           
 
             await dbcontext.SaveChangesAsync();
 

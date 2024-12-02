@@ -100,21 +100,27 @@ namespace api_booking_hotel.Repositories.HotelRepositories
                 Address = x.Address,
                 Favorite = x.Favorite,
                 Phone_Number = x.Phone_Number,
-                ImageHotelViewModels = dbcontext.ImageHotels.Where(k=>k.HotelId == x.Id).Select(k=> new ImageHotelViewModel
+                ImageHotelViewModels = dbcontext.ImageHotels.Where(k => k.HotelId == x.Id).Select(k => new ImageHotelViewModel
                 {
                     Id = k.Id,
                     Image = k.Image,
                     Active = k.Active,
                     Position = k.Position,
                 }).ToList(),
-                HotelUtilityViewModels = dbcontext.HotelUtilities.Where(k=>k.HotelId == x.Id).Select(k=> new HotelUtilityViewModel
+                HotelUtilityViewModels = dbcontext.HotelUtilities.Where(k => k.HotelId == x.Id).Select(k => new HotelUtilityViewModel
                 {
-                    Id= k.Id,
+                    Id = k.Id,
                     UtilityId = k.UtilityId,
                     UtilityViewModel = new UtilityViewModel
                     {
                         Name = k.Utility.Name,
+                        UtilityCategoryId = k.Utility.UtilityCategoryId,
+                        UtilityCategoryViewModel = k.Utility.UtilityCategory != null ? new UtilityCategoryViewModel
+                        {
+                            Name = k.Utility.UtilityCategory.Name
+                        } : null
                     } ?? null,
+
                 }).ToList(),
             }).OrderByDescending(x => x.Id).ToListAsync();
 #pragma warning restore CS8602 // Dereference of a possibly null reference.

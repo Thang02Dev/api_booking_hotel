@@ -22,38 +22,71 @@ namespace api_booking_hotel.Repositories.ImageRoomRepositories
             return data.Active;
         }
 
-        public async Task<List<string>> Create(ImageRoomViewModel model, IFormFile[] fileimage)
+        public async Task<List<string>> Create(ImageRoomViewModel model, IFormFile[] files)
         {
-            if (model == null || fileimage == null || fileimage.Length == 0)
+
+            if (model == null || files == null)
             {
                 return null;
             }
 
             var list = new List<string>();
-            foreach (var item in fileimage)
+
+            // Đường dẫn thư mục gốc để lưu file
+            var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", "Images", "Rooms");
+
+            // Kiểm tra và tạo thư mục nếu chưa tồn tại
+            if (!Directory.Exists(uploadFolder))
             {
-                var data = new ImageRoom
-                {
-                    Active = true,
-                    Position = model.Position,
-                    Description = model.Description,
-                    RoomId = model.RoomId
-                };
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Images/Rooms", item.FileName);
-                using (var stream = File.Create(path))
-                {
-                    await item.CopyToAsync(stream);
-                }
-
-                data.Image = "/Uploads/Images/Rooms/" + item.FileName;
-
-                await dbcontext.ImageRooms.AddAsync(data);
-                await dbcontext.SaveChangesAsync();
-
-                list.Add(data.Image);
-                model.Position += 1;
-
+                Directory.CreateDirectory(uploadFolder);
             }
+            foreach (var item in files)
+            {
+                try
+                {
+                    // Xử lý vị trí
+                    var count = dbcontext.ImageRooms.Count();
+                    var maxPosition = 0;
+                    if (count > 0)
+                    {
+                        var images = await dbcontext.ImageRooms.Where(x => x.RoomId == model.RoomId).ToListAsync();
+                        maxPosition = images.Count != 0 ? images.Max(x => x.Position) : 0; // Giá trị mặc định là 0 nếu không có bản ghi nào
+
+                    }
+
+                    // Tạo tên file duy nhất (tránh ghi đè)
+                    var uniqueFileName = $"{Guid.NewGuid()}_{item.FileName}";
+                    var filePath = Path.Combine(uploadFolder, uniqueFileName);
+
+                    // Lưu file vào thư mục
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await item.CopyToAsync(stream);
+                    }
+
+                    // Tạo bản ghi trong CSDL
+                    var data = new ImageRoom
+                    {
+                        Active = true,
+                        Position = maxPosition + 1,
+                        Description = model.Description,
+                        RoomId = model.RoomId,
+                        Image = $"/Uploads/Images/Rooms/{uniqueFileName}" // Đường dẫn tương đối
+                    };
+
+                    await dbcontext.ImageRooms.AddAsync(data);
+                    await dbcontext.SaveChangesAsync();
+
+                    // Thêm đường dẫn vào danh sách trả về
+                    list.Add(data.Image);
+                }
+                catch (Exception ex)
+                {
+                    // Log lỗi hoặc xử lý lỗi theo cách bạn muốn
+                    Console.WriteLine($"Error processing file {item.FileName}: {ex.Message}");
+                }
+            }
+
 
             return list;
         }
@@ -117,12 +150,20 @@ namespace api_booking_hotel.Repositories.ImageRoomRepositories
             return rs;
         }
 
-        public async Task<ImageRoomPagin> GetPagin(int current)
+        public async Task<ImageRoomPagin> GetPagin(int current, int roomId)
         {
             var result = 15f;
 
-            var count = Math.Ceiling(await dbcontext.ImageRooms.CountAsync() / result);
-            var list = await GetAll();
+            var count = Math.Ceiling(await dbcontext.ImageRooms.Where(x => x.RoomId == roomId).CountAsync() / result);
+            var list = await dbcontext.ImageRooms.Where(x => x.RoomId == roomId).Select(x => new ImageRoomViewModel
+            {
+                Id = x.Id,
+                Active = x.Active,
+                Position = x.Position,
+                Description = x.Description,
+                Image = x.Image,
+                RoomId = x.RoomId,
+            }).OrderBy(x => x.Position).ToListAsync();
             var data = list.Skip((current - 1) * (int)result).Take((int)result).ToList();
             return new ImageRoomPagin
             {
@@ -132,37 +173,17 @@ namespace api_booking_hotel.Repositories.ImageRoomRepositories
             };
         }
 
-        public async Task<string> Update(ImageRoomViewModel model, int id, IFormFile fileimage)
+        public async Task<string> Update(ImageRoomViewModel model, int id)
         {
             var data = await dbcontext.ImageRooms.FindAsync(id);
-            if (model == null || fileimage == null || fileimage.Length == 0 || data == null)
+            if (model == null || data == null)
             {
                 return null;
             };
             data.Active = true;
             data.Position = model.Position;
             data.Description = model.Description;
-            data.RoomId = model.RoomId;
-            if (data.Image != null)
-            {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Images/Rooms");
-                var imageFileName = Path.GetFileName(data.Image);
-                var imagePathToDelete = Path.Combine(uploadsFolder, imageFileName);
 
-                // Kiểm tra xem tệp tồn tại trước khi xóa
-                if (File.Exists(imagePathToDelete))
-                {
-                    File.Delete(imagePathToDelete);
-                }
-            }
-
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Images", "Rooms", fileimage.FileName);
-            using (var stream = File.Create(path))
-            {
-                await fileimage.CopyToAsync(stream);
-            }
-
-            data.Image = "/Uploads/Images/Rooms/" + fileimage.FileName;
 
             await dbcontext.SaveChangesAsync();
 

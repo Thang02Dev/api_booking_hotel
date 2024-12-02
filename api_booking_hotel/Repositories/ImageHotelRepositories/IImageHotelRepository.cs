@@ -7,9 +7,9 @@ namespace api_booking_hotel.Repositories.ImageHotelRepositories
         Task<List<ImageHotelViewModel>> GetAll();
         Task<ImageHotelViewModel> GetById(int id);
         Task<List<string>> Create(ImageHotelViewModel model, IFormFile[] fileimage);
-        Task<string> Update(ImageHotelViewModel model, int id, IFormFile fileimage);
+        Task<string> Update(int id, ImageHotelViewModel model);
         Task<ImageHotelViewModel> Delete(int id);
         Task<bool?> ChangedActive(int id);
-        Task<ImageHotelPagin> GetPagin(int current);
+        Task<ImageHotelPagin> GetPagin(int current, int hotelId);
     }
 }

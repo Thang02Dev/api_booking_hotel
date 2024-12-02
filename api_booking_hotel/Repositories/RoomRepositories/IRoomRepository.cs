@@ -10,6 +10,6 @@ namespace api_booking_hotel.Repositories.RoomRepositories
         Task<object> Update(SetRoomViewModel model, int id);
         Task<RoomViewModel> Delete(int id);
         Task<bool?> ChangedActive(int id);
-        Task<RoomPagin> GetPagin(int current, string? keySearch);
+        Task<RoomPagin> GetPagin(int hotelId,int current, string? keySearch);
     }
 }

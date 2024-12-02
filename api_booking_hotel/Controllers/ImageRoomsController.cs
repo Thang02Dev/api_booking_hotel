@@ -34,12 +34,12 @@ namespace api_booking_hotel.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] ImageRoomViewModel model, IFormFile[] fileimage)
+        public async Task<IActionResult> Create([FromForm] ImageRoomViewModel model, IFormFile[] files)
         {
             if (!ModelState.IsValid) return BadRequest();
             else
             {
-                var rs = await repository.Create(model, fileimage);
+                var rs = await repository.Create(model, files);
                 if (rs == null) return BadRequest("Tạo mới thất bại. Lỗi!");
                 return Ok(new
                 {
@@ -50,12 +50,12 @@ namespace api_booking_hotel.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update([FromForm] ImageRoomViewModel model, int id, IFormFile fileimage)
+        public async Task<IActionResult> Update([FromForm] ImageRoomViewModel model, int id)
         {
             if (!ModelState.IsValid) return BadRequest();
             else
             {
-                var rs = await repository.Update(model, id, fileimage);
+                var rs = await repository.Update(model, id);
                 if (rs == null) return BadRequest("Cập nhật thất bại. Có thể ảnh không tồn tại!");
                 return Ok(new
                 {
@@ -96,9 +96,9 @@ namespace api_booking_hotel.Controllers
         }
 
         [HttpGet("page/{page:int}")]
-        public async Task<IActionResult> GetPagin(int page)
+        public async Task<IActionResult> GetPagin(int page, int roomId)
         {
-            var rs = await repository.GetPagin(page);
+            var rs = await repository.GetPagin(page, roomId);
             if (rs == null) return BadRequest();
             return Ok(new
             {

@@ -164,12 +164,12 @@ namespace api_booking_hotel.Repositories.RoomRepositories
             return rs;
         }
 
-        public async Task<RoomPagin> GetPagin(int current, string? keySearch)
+        public async Task<RoomPagin> GetPagin(int hotelId,int current, string? keySearch)
         {
             var result = 15f;
             if (keySearch != null && keySearch.Length > 0)
             {
-                var list = GetAll().Result.Where(x => x.Name.Contains(keySearch, StringComparison.CurrentCultureIgnoreCase)
+                var list = GetAll().Result.Where(x => x.HotelId == hotelId && x.Name.Contains(keySearch, StringComparison.CurrentCultureIgnoreCase)
                                     || x.Slug.Contains(keySearch, StringComparison.CurrentCultureIgnoreCase)).ToList();
                 var count = Math.Ceiling(list.Count / result);
 
@@ -184,7 +184,7 @@ namespace api_booking_hotel.Repositories.RoomRepositories
             else
             {
                 var count = Math.Ceiling(await dbcontext.Rooms.CountAsync() / result);
-                var list = await GetAll();
+                var list =  GetAll().Result.Where(x => x.HotelId == hotelId);
                 var data = list.Skip((current - 1) * (int)result).Take((int)result).ToList();
                 return new RoomPagin
                 {
@@ -205,7 +205,8 @@ namespace api_booking_hotel.Repositories.RoomRepositories
             };
             else
             {
-                var isName = await dbcontext.Rooms.SingleOrDefaultAsync(x => x.Name == model.Name);
+
+                var isName = await dbcontext.Rooms.SingleOrDefaultAsync(x => x.Name == model.Name && x.Id != id);
                 if (isName != null) return new
                 {
                     mess = "Tên đã tồn tại!",

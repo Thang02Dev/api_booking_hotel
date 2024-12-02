@@ -7,8 +7,8 @@ namespace api_booking_hotel.ViewModels
     public class ImageRoomViewModel
     {
         public int Id { get; set; }
-        [Required(ErrorMessage = "Ảnh phòng không được bỏ trống")]
-        public string Image { get; set; } = string.Empty;
+        
+        public string? Image { get; set; } = string.Empty;
         [Required(ErrorMessage ="Trạng thái không được bỏ trống")]
         public bool Active { get; set; }
         [Required(ErrorMessage ="Thứ tự vị trí không được bỏ trống")]
